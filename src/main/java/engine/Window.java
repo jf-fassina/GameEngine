@@ -5,6 +5,7 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 
+import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -15,11 +16,16 @@ public class Window {
     private String title;
     private static Window window = null;
     private long glfwWindow;
+    private float r, g, b, a;
 
     private Window(String title, int width, int height) {
         this.title = title;
         this.width = width;
         this.height = height;
+        this.r = 1f;
+        this.g = 1f;
+        this.b = 1f;
+        this.a = 1f;
     }
 
     public static Window getWindow(String title, int width, int height) {
@@ -34,6 +40,16 @@ public class Window {
 
         init();
         loop();
+
+        //-- Best Practices!!
+        //Free the memory
+        glfwFreeCallbacks(glfwWindow);
+        glfwDestroyWindow(glfwWindow);
+
+        //Terminate GLFW an free the error callback
+        glfwTerminate();
+        glfwSetErrorCallback(null).free();
+
     }
 
     public void init() {
@@ -55,10 +71,15 @@ public class Window {
 
         //Create the window
         glfwWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
-
         if (glfwWindow == NULL) {
             throw new IllegalStateException("Failed to create the GLFW window");
         }
+
+        //Listeners --
+        glfwSetCursorPosCallback(glfwWindow, MouseListener::mousePosCallback);
+        glfwSetMouseButtonCallback(glfwWindow, MouseListener::mouseButtonCallback);
+        glfwSetScrollCallback(glfwWindow, MouseListener::mouseScrollCallback);
+        glfwSetKeyCallback(glfwWindow, KeyListener::keyCallback);
 
         //Make the OpenGL context current
         glfwMakeContextCurrent(glfwWindow);
@@ -83,7 +104,7 @@ public class Window {
             //Poll Events -> mouse, keys
             glfwPollEvents();
 
-            glClearColor(1f, 1f, 1f, 1f);
+            glClearColor(r, g, b, a);
             glClear(GL_COLOR_BUFFER_BIT);
 
             glfwSwapBuffers(glfwWindow);
@@ -91,6 +112,7 @@ public class Window {
 
     }
 
+    //GETTERS E SETTERS
 
     public int getWidth() {
         return width;
