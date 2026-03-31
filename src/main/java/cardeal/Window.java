@@ -1,12 +1,12 @@
-package engine;
+package cardeal;
 
-import engine.util.Time;
-import engine.listeners.KeyListener;
-import engine.listeners.MouseListener;
+import cardeal.util.Time;
+import cardeal.listeners.KeyListener;
+import cardeal.listeners.MouseListener;
 
-import engine.scenes.LevelEditorScene;
-import engine.scenes.LevelScene;
-import engine.scenes.Scene;
+import cardeal.scenes.LevelEditorScene;
+import cardeal.scenes.LevelScene;
+import cardeal.scenes.Scene;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -20,8 +20,8 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public class Window {
 
     private static String title = "Título";
-    private static int width = 900;
-    private static int height = 700;
+    private static int width = 1920;
+    private static int height = 1080;
 
 
     private static Window window = null;

@@ -1,11 +1,10 @@
-package engine.scenes;
+package cardeal.scenes;
 
-import engine.Window;
-import engine.listeners.KeyListener;
+import cardeal.Camera;
+import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
 import renderer.Shader;
 
-import java.awt.event.KeyEvent;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
@@ -40,14 +39,17 @@ public class LevelEditorScene extends Scene {
             "}";
 
     private int vertexId, fragmentId, shaderProgram;
+    private String uProjection = "uProjection";
+    private String uView = "uView";
+    private final String filepath = "src/main/shaders/default.glsl";
 
     private float[] vertexArray = {
-            //x,y,z                 //r,    g,    b,  a
-            //positions             //color
-            0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, //Bottom Right  0
-            -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, //Top Left      1
-            0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, //Top Right     2
-            -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, //Bottom Left   3
+            //positions              //colors
+            // x     y     z         //r    g     b     a
+            100.5f, 0.5f, 0.0f, /**/ 1.0f, 0.0f, 0.0f, 1.0f, //Bottom Right  0
+            0.5f, 100.5f, 0.0f, /**/ 0.0f, 1.0f, 0.0f, 1.0f, //Top Left      1
+            100.5f, 100.5f, 0.0f, /**/ 1.0f, 0.0f, 1.0f, 1.0f, //Top Right     2
+            0.5f, 0.5f, 0.0f, /**/ 1.0f, 1.0f, 0.0f, 1.0f, //Bottom Left   3
     };
 
     //IMPORTANT: Must be in counte-clockwise order ( trigonometric circle at its peak)
@@ -69,10 +71,13 @@ public class LevelEditorScene extends Scene {
 
     }
 
+    //---------------------------------------------
 
     @Override
     public void init() {
-        defaultShader = new Shader("src/main/shaders/default.glsl");
+        this.camera = new Camera(new Vector2f());
+
+        defaultShader = new Shader(filepath);
         defaultShader.compileAndLink();
         //Generate VAO, VBO, EBO buffer objects, and send to GPU ---------------
 
@@ -110,10 +115,17 @@ public class LevelEditorScene extends Scene {
 
     }
 
+    //-----------------------------------------
+
     @Override
     public void update(float deltaTime) {
 
-       defaultShader.use();
+        camera.position.x -= deltaTime * 50.0f;
+
+        defaultShader.use();
+        // I HATE STRINGS!
+        defaultShader.uploadMat4f(uProjection, camera.getProjectionMatrix());
+        defaultShader.uploadMat4f(uView, camera.getViewMatrix());
 
         //Bind VAO that we're using
         glBindVertexArray(vaoId);

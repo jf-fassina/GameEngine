@@ -1,7 +1,10 @@
-package engine.scenes;
+package cardeal.scenes;
+
+import cardeal.Camera;
 
 public abstract class Scene {
 
+    protected Camera camera;
     public Scene(){
 
     }
