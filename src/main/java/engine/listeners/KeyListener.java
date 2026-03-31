@@ -1,4 +1,4 @@
-package engine;
+package engine.listeners;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -8,8 +8,7 @@ public class KeyListener {
     private boolean keyPressed[] = new boolean[GLFW_KEY_LAST];
 
 
-    private KeyListener() {
-    }
+    protected KeyListener() {}
 
     public static KeyListener getKeyListener() {
         if (instance == null) instance = new KeyListener();

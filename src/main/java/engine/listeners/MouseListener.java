@@ -1,4 +1,4 @@
-package engine;
+package engine.listeners;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -11,7 +11,7 @@ public class MouseListener {
     private boolean isDragging;
 
 
-    private MouseListener() {
+    protected MouseListener() {
         this.scrollX = 0d;
         this.scrollY = 0d;
         this.posX = 0d;

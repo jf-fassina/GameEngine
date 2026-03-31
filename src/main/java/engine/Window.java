@@ -1,5 +1,13 @@
 package engine;
 
+import util.Time;
+import engine.listeners.KeyListener;
+import engine.listeners.MouseListener;
+
+
+import engine.scenes.LevelEditorScene;
+import engine.scenes.LevelScene;
+import engine.scenes.Scene;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -12,11 +20,17 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
 
-    private int width, height;
-    private String title;
+    private static String title = "Título";
+    private static int width = 800;
+    private static int height = 600;
+
+
     private static Window window = null;
     private long glfwWindow;
-    private float r, g, b, a;
+    public float r, g, b, a;
+
+
+    private static Scene currentScene = null;
 
     private Window(String title, int width, int height) {
         this.title = title;
@@ -28,7 +42,23 @@ public class Window {
         this.a = 1f;
     }
 
-    public static Window getWindow(String title, int width, int height) {
+    public static void changeScene(int newScene) {
+        switch (newScene) {
+            case 0:
+                currentScene = new LevelEditorScene();
+                //currentScene.init();
+                break;
+            case 1:
+                currentScene = new LevelScene();
+                break;
+            default:
+                assert false : "Unknown scene: " + newScene;
+                break;
+        }
+    }
+
+    //TODO: setWindow(){}
+    public static Window getWindow() {
         if (window == null) {
             Window.window = new Window(title, width, height);
         }
@@ -96,9 +126,17 @@ public class Window {
         // creates the GLCapabilities instance and makes the OpenGL
         // bindings available for use.
         GL.createCapabilities();
+
+        Window.changeScene(0);
+        //makes sure we are in a scene
     }
 
     public void loop() {
+        //initializes time
+        float beginTime = Time.getTime();
+        float endTime;
+        float deltaTime = -1f;
+
 
         while (!glfwWindowShouldClose(glfwWindow)) {
             //Poll Events -> mouse, keys
@@ -107,7 +145,16 @@ public class Window {
             glClearColor(r, g, b, a);
             glClear(GL_COLOR_BUFFER_BIT);
 
+            if (deltaTime >= 0) currentScene.update(deltaTime);
+
             glfwSwapBuffers(glfwWindow);
+
+            //end time = now
+            endTime = Time.getTime();
+            //does delta
+            deltaTime = endTime - beginTime;
+            //new begin time
+            beginTime = endTime;
         }
 
     }
