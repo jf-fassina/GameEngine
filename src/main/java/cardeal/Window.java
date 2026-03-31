@@ -1,13 +1,12 @@
-package engine;
+package cardeal;
 
-import util.Time;
-import engine.listeners.KeyListener;
-import engine.listeners.MouseListener;
+import cardeal.util.Time;
+import cardeal.listeners.KeyListener;
+import cardeal.listeners.MouseListener;
 
-
-import engine.scenes.LevelEditorScene;
-import engine.scenes.LevelScene;
-import engine.scenes.Scene;
+import cardeal.scenes.LevelEditorScene;
+import cardeal.scenes.LevelScene;
+import cardeal.scenes.Scene;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -21,8 +20,8 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public class Window {
 
     private static String title = "Título";
-    private static int width = 800;
-    private static int height = 600;
+    private static int width = 1920;
+    private static int height = 1080;
 
 
     private static Window window = null;
@@ -46,10 +45,11 @@ public class Window {
         switch (newScene) {
             case 0:
                 currentScene = new LevelEditorScene();
-                //currentScene.init();
+                currentScene.init();
                 break;
             case 1:
                 currentScene = new LevelScene();
+                currentScene.init();
                 break;
             default:
                 assert false : "Unknown scene: " + newScene;
@@ -76,7 +76,7 @@ public class Window {
         glfwFreeCallbacks(glfwWindow);
         glfwDestroyWindow(glfwWindow);
 
-        //Terminate GLFW an free the error callback
+        //Terminate GLFW a free the error callback
         glfwTerminate();
         glfwSetErrorCallback(null).free();
 
@@ -88,7 +88,7 @@ public class Window {
         GLFWErrorCallback.createPrint(System.err).set();
 
 
-        //Initialize GLFW. Most functions don't work beofre this
+        //Initialize GLFW. Most functions don't work before this
         if (!GLFW.glfwInit()) {
             throw new IllegalStateException("Unable to initialize GLFW");
         }

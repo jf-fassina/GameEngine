@@ -1,6 +1,6 @@
-package engine.scenes;
+package cardeal.scenes;
 
-import engine.Window;
+import cardeal.Window;
 
 public class LevelScene extends Scene {
 

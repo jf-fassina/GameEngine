@@ -1,4 +1,4 @@
-package util;
+package cardeal.util;
 
 public class Time {
 
