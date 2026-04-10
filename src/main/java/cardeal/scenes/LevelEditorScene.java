@@ -1,6 +1,7 @@
 package cardeal.scenes;
 
 import cardeal.Camera;
+import cardeal.util.Time;
 import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
 import renderer.Shader;
@@ -39,8 +40,6 @@ public class LevelEditorScene extends Scene {
             "}";
 
     private int vertexId, fragmentId, shaderProgram;
-    private String uProjection = "uProjection";
-    private String uView = "uView";
     private final String filepath = "src/main/shaders/default.glsl";
 
     private float[] vertexArray = {
@@ -124,8 +123,9 @@ public class LevelEditorScene extends Scene {
 
         defaultShader.use();
         // I HATE STRINGS!
-        defaultShader.uploadMat4f(uProjection, camera.getProjectionMatrix());
-        defaultShader.uploadMat4f(uView, camera.getViewMatrix());
+        defaultShader.uploadMat4f("uProjection", camera.getProjectionMatrix());
+        defaultShader.uploadMat4f("uView", camera.getViewMatrix());
+        defaultShader.uploadFloat("uTime", Time.getTime());
 
         //Bind VAO that we're using
         glBindVertexArray(vaoId);

@@ -1,12 +1,11 @@
 package cardeal;
 
-import cardeal.util.Time;
 import cardeal.listeners.KeyListener;
 import cardeal.listeners.MouseListener;
-
 import cardeal.scenes.LevelEditorScene;
 import cardeal.scenes.LevelScene;
 import cardeal.scenes.Scene;
+import cardeal.util.Time;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -87,6 +86,7 @@ public class Window {
         //System.err.println("Error");
         GLFWErrorCallback.createPrint(System.err).set();
 
+        glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
 
         //Initialize GLFW. Most functions don't work before this
         if (!GLFW.glfwInit()) {

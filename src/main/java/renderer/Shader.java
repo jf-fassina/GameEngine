@@ -1,6 +1,6 @@
 package renderer;
 
-import org.joml.Matrix4f;
+import org.joml.*;
 import org.lwjgl.BufferUtils;
 
 import java.io.IOException;
@@ -14,6 +14,9 @@ import static org.lwjgl.opengl.GL20.*;
 public class Shader {
 
     private int shaderProgramId;
+    private boolean beingUsed = false;
+
+
     private String vertexShaderSource;
     private String fragmentShaderSource;
     private String filepath = "";
@@ -27,12 +30,12 @@ public class Shader {
 
             //Find first pattern after #type 'pattern'
             int index = source.indexOf("#type") + 5;
-            int eol = source.indexOf("\r\n", index);
+            int eol = source.indexOf("\n", index);
             String firstPattern = source.substring(index, eol).trim();
 
             //Find second pattern after #type 'pattern'
             index = source.indexOf("#type", eol) + 5;
-            eol = source.indexOf("\r\n", index);
+            eol = source.indexOf("\n", index);
             String secondPattern = source.substring(index, eol).trim();
 
             if (firstPattern.equals("vertex")) vertexShaderSource = stripFirstLine(splitString[1]);
@@ -100,21 +103,66 @@ public class Shader {
     }
 
     public void use() {
-        //Bind Shader Program
-        glUseProgram(shaderProgramId);
+        if (!beingUsed) {
+            glUseProgram(shaderProgramId);
+            beingUsed = true;
+        }
     }
 
     public void detach() {
         glUseProgram(0);
+        beingUsed = false;
     }
 
 
     public void uploadMat4f(String varName, Matrix4f mat4) {
         int varLocation = glGetUniformLocation(shaderProgramId, varName);
+        use();
         FloatBuffer matBuffer = BufferUtils.createFloatBuffer(16);//16 caus it is 4x4
-        mat4.get(matBuffer);
+        mat4.get(matBuffer); // [1,1,1,1,1,...,1]
 
+        //expects 16line array
         glUniformMatrix4fv(varLocation, false, matBuffer);
+    }
+
+    public void uploadMat3f(String varName, Matrix3f mat3f) {
+        int varLocation = glGetUniformLocation(shaderProgramId, varName);
+        use();
+        FloatBuffer matBuffer = BufferUtils.createFloatBuffer(9);//16 caus it is 4x4
+        mat3f.get(matBuffer); // [1,1,1,1,1,...,1]
+
+        //expects 16line array
+        glUniformMatrix4fv(varLocation, false, matBuffer);
+    }
+
+    public void uploadVec4f(String varName, Vector4f vec) {
+        int varLocation = glGetUniformLocation(shaderProgramId, varName);
+        use();
+        glUniform4f(varLocation, vec.x, vec.y, vec.z, vec.w);
+    }
+
+    public void uploadVec3f(String varName, Vector3f vec) {
+        int varLocation = glGetUniformLocation(shaderProgramId, varName);
+        use();
+        glUniform3f(varLocation, vec.x, vec.y, vec.z);
+    }
+
+    public void uploadVec2f(String varName, Vector2f vec) {
+        int varLocation = glGetUniformLocation(shaderProgramId, varName);
+        use();
+        glUniform2f(varLocation, vec.x, vec.y);
+    }
+
+    public void uploadFloat(String varName, float val) {
+        int varLocation = glGetUniformLocation(shaderProgramId, varName);
+        use();
+        glUniform1f(varLocation, val);
+    }
+
+    public void uploadInt(String varName, int val) {
+        int varLocation = glGetUniformLocation(shaderProgramId, varName);
+        use();
+        glUniform1i(varLocation, val);
     }
 
     private String stripFirstLine(String s) {
