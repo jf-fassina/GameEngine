@@ -5,6 +5,6 @@ public class Main {
 
         Window window = Window.getWindow();
         window.run();
-
     }
+
 }
